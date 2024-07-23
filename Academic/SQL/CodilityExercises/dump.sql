@@ -76,3 +76,103 @@ from Latestno a
 inner join SecondNo b on b.event_type = a.event_type
 order by a.event_type
 
+create table price_updates(
+    product varchar not null,
+      time date not null,
+      price int not null
+
+);
+
+Create and SQL query that which list all products whose price increased with every update.
+
+
+-- Implement your solution here
+with cteSelectProduct as (
+select *
+from price_updates
+),
+countProduct as (
+Select a.product
+from cteSelectProduct a, price_updates b
+where (
+a.product = b.product
+and a.date < b.date 
+)
+group by a.product
+having max(a.price) < max(b.price)
+)
+
+select * from countProduct
+
+
+SELECT p1.product
+FROM price_updates p1
+JOIN price_updates p2
+ON p1.product = p2.product AND p1.date < p2.date
+GROUP BY p1.product
+HAVING MAX(p1.price) < MAX(p2.price);
+
+
+
+cteCountProduct as (
+
+SELECT product 
+FROM price_updates Prod1
+JOIN price_updates Prod2 on Prod1.product = Prod2.product
+AND Prod1.date < Prod2.date
+group by Prod1.product
+HAVING MAX(prod1.price) < max(prod2.price)
+
+)
+
+
+
+with cteCountProduct as (
+
+SELECT prod1.product 
+FROM price_updates Prod1
+JOIN price_updates Prod2 on Prod1.product = Prod2.product
+AND Prod1.date < Prod2.date
+group by Prod1.product
+HAVING MAX(prod1.price) < max(prod2.price)
+
+)
+
+select * from cteCountProduct
+
+
+
+
+with cteCountProduct as (
+
+SELECT prod1.product 
+FROM price_updates Prod1, price_updates Prod2
+where Prod1.product = Prod2.product
+AND Prod1.date < Prod2.date
+group by Prod1.product
+HAVING MAX(prod1.price) < max(prod2.price)
+
+)
+select * from cteCountProduct
+
+
+
+
+-- Implement your solution here
+with cteCountProduct as (
+SELECT prod1.product as product 
+FROM price_updates Prod1, price_updates Prod2
+where 
+Prod1.product = Prod2.product
+AND Prod1.date < Prod2.date
+group by Prod1.product
+HAVING MAX(prod1.price) < max(prod2.price)
+)
+select product from cteCountProduct
+
+/**
+works only with below assumed instances as per instruction;
+    > product and date are unique
+    > price are positive values 
+**/
+
